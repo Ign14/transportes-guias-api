@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: transportes-guias-api
+
+  # Base de datos H2 por defecto (configurable a Oracle por variables de entorno).
+  datasource:
+    url: ${DB_URL:jdbc:h2:file:./data/guias;DB_CLOSE_ON_EXIT=FALSE}
+    driver-class-name: ${DB_DRIVER:org.h2.Driver}
+    username: ${DB_USERNAME:sa}
+    password: ${DB_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: false
+  h2:
+    console:
+      enabled: ${H2_CONSOLE_ENABLED:true}
+      path: /h2-console
+
+server:
+  port: ${SERVER_PORT:8080}
+
+# ---- Configuracion AWS (NUNCA hardcodear: usar variables de entorno / GitHub Secrets) ----
+aws:
+  region: ${AWS_REGION:us-east-1}
+  accessKeyId: ${AWS_ACCESS_KEY_ID:}
+  secretAccessKey: ${AWS_SECRET_ACCESS_KEY:}
+  sessionToken: ${AWS_SESSION_TOKEN:}
+  s3:
+    bucket: ${AWS_S3_BUCKET:transportes-guias-grupo13}
+
+# ---- EFS: punto de montaje dentro del contenedor ----
+efs:
+  mount-path: ${EFS_MOUNT_PATH:/app/efs}
+
+# ---- Actuator: health check usado por el pipeline / monitoreo ----
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+logging:
+  level:
+    com.grupo13.transportes: INFO
+    software.amazon.awssdk: WARN

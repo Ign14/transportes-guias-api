@@ -85,12 +85,14 @@ jobs:
               -v /mnt/efs:/app/efs \
               -p 8080:8080 \
               -e AWS_REGION="${{ secrets.AWS_REGION }}" \
-              -e AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}" \
-              -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
-              -e AWS_SESSION_TOKEN="${{ secrets.AWS_SESSION_TOKEN }}" \
               -e AWS_S3_BUCKET="${{ secrets.AWS_S3_BUCKET }}" \
               -e EFS_MOUNT_PATH="/app/efs" \
               "$IMAGE"
+
+            # Nota: no se pasan AWS_ACCESS_KEY_ID/SECRET/SESSION_TOKEN.
+            # El contenedor obtiene credenciales del rol IAM de la EC2 (LabRole)
+            # via el metadata de la instancia; el SDK de AWS las renueva solo,
+            # evitando la expiracion de los tokens temporales del Learner Lab.
 
             echo ">> Limpiando imagenes huerfanas"
             docker image prune -f

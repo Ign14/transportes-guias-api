@@ -1,17 +1,17 @@
 {
   "info": {
     "name": "Transportes Guias API - Grupo 13",
-    "description": "Coleccion de pruebas para el Sistema de Gestion de Guias de Despacho (Cloud Native, Semana 3).",
+    "description": "Pruebas del Sistema de Gestion de Guias de Despacho (Cloud Native, Semana 3). Cambia baseUrl si la IP de la EC2 cambia.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
-    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "baseUrl", "value": "http://54.209.31.165:8080" },
     { "key": "guiaId", "value": "1" },
     { "key": "transportista", "value": "Transportista X" }
   ],
   "item": [
     {
-      "name": "1. Crear guia (genera PDF en EFS)",
+      "name": "1. Crear guia (POST - genera PDF en EFS)",
       "request": {
         "method": "POST",
         "header": [
@@ -26,59 +26,45 @@
       }
     },
     {
-      "name": "2. Subir guia a S3",
+      "name": "2. Subir guia a S3 (POST)",
       "request": {
         "method": "POST",
         "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/api/guias/{{guiaId}}/subir-s3",
-          "host": ["{{baseUrl}}"], "path": ["api", "guias", "{{guiaId}}", "subir-s3"]
-        }
+        "url": { "raw": "{{baseUrl}}/api/guias/{{guiaId}}/subir-s3", "host": ["{{baseUrl}}"], "path": ["api", "guias", "{{guiaId}}", "subir-s3"] }
       }
     },
     {
-      "name": "3. Descargar guia - ADMIN (200)",
+      "name": "3. Descargar - ADMIN (GET - 200)",
       "request": {
         "method": "GET",
-        "header": [
-          { "key": "X-Usuario-Rol", "value": "ADMIN" }
-        ],
-        "url": {
-          "raw": "{{baseUrl}}/api/guias/{{guiaId}}/descargar",
-          "host": ["{{baseUrl}}"], "path": ["api", "guias", "{{guiaId}}", "descargar"]
-        }
+        "header": [ { "key": "X-Usuario-Rol", "value": "ADMIN" } ],
+        "url": { "raw": "{{baseUrl}}/api/guias/{{guiaId}}/descargar", "host": ["{{baseUrl}}"], "path": ["api", "guias", "{{guiaId}}", "descargar"] }
       }
     },
     {
-      "name": "3b. Descargar guia - TRANSPORTISTA propio (200)",
+      "name": "3b. Descargar - TRANSPORTISTA propio (GET - 200)",
       "request": {
         "method": "GET",
         "header": [
           { "key": "X-Usuario-Rol", "value": "TRANSPORTISTA" },
           { "key": "X-Usuario-Nombre", "value": "{{transportista}}" }
         ],
-        "url": {
-          "raw": "{{baseUrl}}/api/guias/{{guiaId}}/descargar",
-          "host": ["{{baseUrl}}"], "path": ["api", "guias", "{{guiaId}}", "descargar"]
-        }
+        "url": { "raw": "{{baseUrl}}/api/guias/{{guiaId}}/descargar", "host": ["{{baseUrl}}"], "path": ["api", "guias", "{{guiaId}}", "descargar"] }
       }
     },
     {
-      "name": "3c. Descargar guia - TRANSPORTISTA ajeno (403)",
+      "name": "3c. Descargar - TRANSPORTISTA ajeno (GET - 403)",
       "request": {
         "method": "GET",
         "header": [
           { "key": "X-Usuario-Rol", "value": "TRANSPORTISTA" },
           { "key": "X-Usuario-Nombre", "value": "Transportista Z" }
         ],
-        "url": {
-          "raw": "{{baseUrl}}/api/guias/{{guiaId}}/descargar",
-          "host": ["{{baseUrl}}"], "path": ["api", "guias", "{{guiaId}}", "descargar"]
-        }
+        "url": { "raw": "{{baseUrl}}/api/guias/{{guiaId}}/descargar", "host": ["{{baseUrl}}"], "path": ["api", "guias", "{{guiaId}}", "descargar"] }
       }
     },
     {
-      "name": "4. Actualizar guia (regenera y reemplaza en S3)",
+      "name": "4. Actualizar guia (PUT - regenera y reemplaza en S3)",
       "request": {
         "method": "PUT",
         "header": [ { "key": "Content-Type", "value": "application/json" } ],
@@ -86,14 +72,11 @@
           "mode": "raw",
           "raw": "{\n  \"cliente\": \"Comercial Andina Ltda (ACTUALIZADO)\",\n  \"direccionDestino\": \"Nueva Direccion 999, Rancagua\"\n}"
         },
-        "url": {
-          "raw": "{{baseUrl}}/api/guias/{{guiaId}}",
-          "host": ["{{baseUrl}}"], "path": ["api", "guias", "{{guiaId}}"]
-        }
+        "url": { "raw": "{{baseUrl}}/api/guias/{{guiaId}}", "host": ["{{baseUrl}}"], "path": ["api", "guias", "{{guiaId}}"] }
       }
     },
     {
-      "name": "5. Historial por transportista y fecha",
+      "name": "5. Historial por transportista y fecha (GET)",
       "request": {
         "method": "GET",
         "header": [],
@@ -108,36 +91,27 @@
       }
     },
     {
-      "name": "6. Detalle de guia",
+      "name": "6. Detalle de guia (GET)",
       "request": {
         "method": "GET",
         "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/api/guias/{{guiaId}}",
-          "host": ["{{baseUrl}}"], "path": ["api", "guias", "{{guiaId}}"]
-        }
+        "url": { "raw": "{{baseUrl}}/api/guias/{{guiaId}}", "host": ["{{baseUrl}}"], "path": ["api", "guias", "{{guiaId}}"] }
       }
     },
     {
-      "name": "7. Eliminar guia de S3",
+      "name": "7. Eliminar guia de S3 (DELETE)",
       "request": {
         "method": "DELETE",
         "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/api/guias/{{guiaId}}",
-          "host": ["{{baseUrl}}"], "path": ["api", "guias", "{{guiaId}}"]
-        }
+        "url": { "raw": "{{baseUrl}}/api/guias/{{guiaId}}", "host": ["{{baseUrl}}"], "path": ["api", "guias", "{{guiaId}}"] }
       }
     },
     {
-      "name": "8. Health check",
+      "name": "8. Health check (GET)",
       "request": {
         "method": "GET",
         "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/actuator/health",
-          "host": ["{{baseUrl}}"], "path": ["actuator", "health"]
-        }
+        "url": { "raw": "{{baseUrl}}/actuator/health", "host": ["{{baseUrl}}"], "path": ["actuator", "health"] }
       }
     }
   ]
